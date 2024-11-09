@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const socialCircleSchema = new mongoose.Schema({
   name: { type: String, required: true },
   type: { type: String, required: true },
@@ -10,3 +12,5 @@ const socialCircleSchema = new mongoose.Schema({
 });
 
 const SocialCircle = mongoose.model("SocialCircle", socialCircleSchema);
+
+module.exports = SocialCircle;
