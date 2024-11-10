@@ -20,4 +20,10 @@ SocialCircleRouter.post(
   socialCircleController.createParentInitiatedCircle
 );
 
+SocialCircleRouter.post(
+  "/:socialCircleId/join",
+  authenticateToken,
+  socialCircleController.joinSocialCircle
+);
+
 module.exports = SocialCircleRouter;

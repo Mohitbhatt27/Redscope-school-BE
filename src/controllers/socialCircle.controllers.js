@@ -16,6 +16,21 @@ const createParentInitiatedCircle = async (req, res) => {
   }
 };
 
+const joinSocialCircle = async (req, res) => {
+  try {
+    const circleId = req.params.socialCircleId;
+    const parentId = req.user._id;
+    const socialCircle = await socialCircleService.joinSocialCircle(
+      circleId,
+      parentId
+    );
+    res.json(socialCircle);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   createParentInitiatedCircle,
+  joinSocialCircle,
 };

@@ -172,8 +172,39 @@ const createParentInitiatedCircle = async (circleData) => {
   }
 };
 
+const joinSocialCircle = async (circleId, parentId) => {
+  try {
+    const socialCircle = await SocialCircle.findById(circleId);
+
+    if (!socialCircle) {
+      throw new Error("Social circle not found");
+    }
+
+    const parent = await Parent.findById(parentId);
+    if (!parent) {
+      throw new Error("Parent not found");
+    }
+
+    if (socialCircle.members.includes(parentId)) {
+      throw new Error("Parent is already a member of this social circle");
+    }
+
+    socialCircle.members.push(parentId);
+    await socialCircle.save();
+
+    parent.social_circles.push(circleId);
+    await parent.save();
+
+    return socialCircle;
+  } catch (error) {
+    console.error("Error joining social circle:", error);
+    throw new Error("Failed to join social circle");
+  }
+};
+
 module.exports = {
   createAutoSocialCircles,
   addParentToSocialCircle,
   createParentInitiatedCircle,
+  joinSocialCircle,
 };
