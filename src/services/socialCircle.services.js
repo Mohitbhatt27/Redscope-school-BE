@@ -146,7 +146,34 @@ const addParentToSocialCircle = async (parentId, socialCircles) => {
   }
 };
 
+const createParentInitiatedCircle = async (circleData) => {
+  try {
+    const parent = await Parent.findById(circleData.parentId);
+    if (!parent) {
+      throw new Error("Parent not found");
+    }
+
+    const newCircle = new SocialCircle({
+      name: circleData.name,
+      type: "custom",
+      customAttributes: circleData.customAttributes,
+      parent: circleData.parentId,
+    });
+    await newCircle.save();
+
+    // Add parent to the circle
+    parent.social_circles.push(newCircle._id);
+    await parent.save();
+
+    return newCircle;
+  } catch (error) {
+    console.error("Error creating parent-initiated circle:", error);
+    throw new Error("Failed to create parent-initiated circle");
+  }
+};
+
 module.exports = {
   createAutoSocialCircles,
   addParentToSocialCircle,
+  createParentInitiatedCircle,
 };
