@@ -3,7 +3,12 @@ const commentService = require("../services/comment.services");
 
 const createComment = async (req, res) => {
   try {
-    const comment = await commentService.createComment(req.body);
+    const postData = {
+      parent_id: req.user._id,
+      post_id: req.params.postID,
+      content: req.body.content,
+    };
+    const comment = await commentService.createComment(postData);
     res.status(201).json(comment);
   } catch (error) {
     res.status(400).json({ error: error.message });
