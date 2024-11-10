@@ -1,11 +1,14 @@
-const getSocieties = async () => {};
-const joinSociety = async () => {};
-const leaveSociety = async () => {};
-const getSocietyMembers = async () => {};
+const Society = require("../models/societies.model");
 
-module.exports = {
-  getSocieties,
-  joinSociety,
-  leaveSociety,
-  getSocietyMembers,
+const createSociety = async (data) => {
+  const society = new Society(data);
+  await society.save();
+  return society;
 };
+
+const getAllSocieties = async () => {
+  const societies = await Society.find();
+  return societies;
+};
+
+module.exports = { createSociety, getAllSocieties };

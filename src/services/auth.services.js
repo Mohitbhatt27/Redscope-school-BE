@@ -20,7 +20,11 @@ const registerParent = async (parentData) => {
       parent._id,
       socialCircles
     );
-    return parent;
+
+    // updating parent
+    const updatedParent = await Parent.findById(parent._id);
+
+    return updatedParent;
   } catch (error) {
     console.log("Something went wrong while registering parent", error.message);
     throw new Error("Registration failed");

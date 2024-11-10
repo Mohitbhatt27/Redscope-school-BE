@@ -15,14 +15,14 @@ const createAutoSocialCircles = async (parentId) => {
 
     // Create a school social circle
     let schoolCircle = await SocialCircle.findOne({
-      name: parent.kid_school_id.name,
+      name: `${parent.kid_school_id.name} School}`,
       type: "school",
       parent: parent.kid_school_id,
     });
 
     if (!schoolCircle) {
       schoolCircle = new SocialCircle({
-        name: parent.kid_school_id.name,
+        name: `${parent.kid_school_id.name} School}`,
         type: "school",
         parent: parent.kid_school_id,
         parentModel: "School",
@@ -33,14 +33,14 @@ const createAutoSocialCircles = async (parentId) => {
 
     // Create a class social circle
     let classCircle = await SocialCircle.findOne({
-      name: `Class ${parent.kid_class_id.name}, ${parent.kid_school_id.name}`,
+      name: `Class ${parent.kid_class_id.name}, ${parent.kid_school_id.name} School`,
       type: "class",
       parent: parent.kid_class_id,
     });
 
     if (!classCircle) {
       classCircle = new SocialCircle({
-        name: `Class ${parent.kid_class_id.name}, ${parent.kid_school_id.name}`,
+        name: `Class ${parent.kid_class_id.name}, ${parent.kid_school_id.name} School`,
         type: "class",
         parent: parent.kid_class_id,
         parentModel: "Class",
@@ -51,14 +51,14 @@ const createAutoSocialCircles = async (parentId) => {
 
     // Create a section social circle
     let sectionCircle = await SocialCircle.findOne({
-      name: `Section ${parent.kid_section_id.name}, Class ${parent.kid_class_id.name}, ${parent.kid_school_id.name}`,
+      name: `Section ${parent.kid_section_id.name}, Class ${parent.kid_class_id.name}, ${parent.kid_school_id.name} School`,
       type: "section",
       parent: parent.kid_section_id,
     });
 
     if (!sectionCircle) {
       sectionCircle = new SocialCircle({
-        name: `Section ${parent.kid_section_id.name}, Class ${parent.kid_class_id.name}, ${parent.kid_school_id.name}`,
+        name: `Section ${parent.kid_section_id.name}, Class ${parent.kid_class_id.name}, ${parent.kid_school_id.name} School`,
         type: "section",
         parent: parent.kid_section_id,
         parentModel: "Section",
@@ -73,13 +73,13 @@ const createAutoSocialCircles = async (parentId) => {
         "society_id"
       );
       let societyCircle = await SocialCircle.findOne({
-        name: parentExtendedDetails.society_id.name,
+        name: `${parentExtendedDetails.society_id.name} Society`,
         type: "society",
         parent: parentExtendedDetails.society_id,
       });
       if (!societyCircle) {
         societyCircle = new SocialCircle({
-          name: parentExtendedDetails.society_id.name,
+          name: `${parentExtendedDetails.society_id.name} Society`,
           type: "society",
           parent: parentExtendedDetails.society_id,
           parentModel: "Society",
@@ -90,14 +90,14 @@ const createAutoSocialCircles = async (parentId) => {
       // Create a society, school circle
 
       let societySchoolCircle = await SocialCircle.findOne({
-        name: `${parentExtendedDetails.society_id.name}, ${parent.kid_school_id.name}`,
+        name: `${parentExtendedDetails.society_id.name} Society, ${parent.kid_school_id.name} School`,
         type: "custom",
         parent: parent.kid_school_id,
       });
 
       if (!societySchoolCircle) {
         societySchoolCircle = new SocialCircle({
-          name: `${parentExtendedDetails.society_id.name}, ${parent.kid_school_id.name}`,
+          name: `${parentExtendedDetails.society_id.name} Society, ${parent.kid_school_id.name} School`,
           type: "custom",
           parent: parent.kid_school_id,
           parentModel: "School",
