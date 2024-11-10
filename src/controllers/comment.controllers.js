@@ -17,7 +17,7 @@ const createComment = async (req, res) => {
 
 const getComments = async (req, res) => {
   try {
-    const comments = await commentService.getComments(req.params.postId);
+    const comments = await commentService.getComments(req.params.postID);
     res.json(comments);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -26,7 +26,12 @@ const getComments = async (req, res) => {
 
 const createReply = async (req, res) => {
   try {
-    const reply = await commentService.createReply(req.body);
+    const replyData = {
+      parent_id: req.user._id,
+      comment_id: req.params.commentId,
+      content: req.body.content,
+    };
+    const reply = await commentService.createReply(replyData);
     res.status(201).json(reply);
   } catch (error) {
     res.status(400).json({ error: error.message });

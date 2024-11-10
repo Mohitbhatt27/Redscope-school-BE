@@ -31,9 +31,10 @@ const createPost = async (postData) => {
 
 const getPosts = async (socialCircleId) => {
   try {
-    const posts = await Post.find({ social_circle_id: socialCircleId })
-      .populate("parent_id")
-      .populate("comments");
+    const posts = await Post.find({
+      social_circle_id: socialCircleId,
+    }).populate("comments");
+
     return posts;
   } catch (error) {
     console.error("Error getting posts:", error);

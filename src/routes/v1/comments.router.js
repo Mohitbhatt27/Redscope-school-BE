@@ -4,12 +4,18 @@ const { authenticateToken } = require("../../middlewares/auth.middlewares");
 const commentController = require("../../controllers/comment.controllers");
 
 CommentRouter.post(
-  ":/commentId/reply",
+  "/:commentId/reply",
   authenticateToken,
   commentController.createReply
 );
 CommentRouter.get(
-  ":/commentId/vote",
+  "/:commentId/vote",
+  authenticateToken,
+  commentController.voteOnComment
+);
+
+CommentRouter.put(
+  "/:commentId/vote",
   authenticateToken,
   commentController.voteOnComment
 );

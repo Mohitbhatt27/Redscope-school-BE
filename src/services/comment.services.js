@@ -61,7 +61,11 @@ const createReply = async (commentData) => {
     if (!post) {
       throw new Error("Post not found");
     }
-    if (!parent.social_circles.includes(post.social_circle_id)) {
+    if (
+      !parent.social_circles.some(
+        (circle) => circle._id.toString() == post.social_circle_id.toString()
+      )
+    ) {
       throw new Error("Parent does not belong to this social circle");
     }
 
