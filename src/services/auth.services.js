@@ -1,4 +1,5 @@
 const Parent = require("../models/parents.model");
+const SocialCircleService = require("../services/socialCircle.services");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config/server.config");
@@ -8,6 +9,17 @@ const registerParent = async (parentData) => {
     const hashedPassword = await bcrypt.hash(parentData.password, 12);
     parentData.password = hashedPassword;
     const parent = await Parent.create(parentData);
+
+    //create social circles for the parent
+    const socialCircles = await SocialCircleService.createAutoSocialCircles(
+      parent._id
+    );
+
+    //Add parent to social circles
+    await SocialCircleService.addParentToSocialCircle(
+      parent._id,
+      socialCircles
+    );
     return parent;
   } catch (error) {
     console.log("Something went wrong while registering parent", error.message);
@@ -41,6 +53,4 @@ const loginParent = async (loginData) => {
   }
 };
 
-const verifySchoolId = async () => {};
-
-module.exports = { registerParent, loginParent, verifySchoolId };
+module.exports = { registerParent, loginParent };

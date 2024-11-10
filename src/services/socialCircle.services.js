@@ -1,17 +1,152 @@
-const createSocialCircle = async () => {};
-const getSocialCircles = async () => {};
-const getCircleMembers = async () => {};
-const joinSocialCircle = async () => {};
-const leaveSocialCircle = async () => {};
-const updateSocialCircle = async () => {};
-const deleteSocialCircle = async () => {};
+const Parent = require("../models/parents.model");
+const SocialCircle = require("../models/socialCircles.model");
+
+const createAutoSocialCircles = async (parentId) => {
+  try {
+    const parent = await Parent.findById(parentId)
+      .populate("kid_school_id")
+      .populate("kid_class_id")
+      .populate("kid_section_id");
+    if (!parent) {
+      throw new Error("Parent not found");
+    }
+
+    const socialCircles = [];
+
+    // Create a school social circle
+    let schoolCircle = await SocialCircle.findOne({
+      name: parent.kid_school_id.name,
+      type: "school",
+      parent: parent.kid_school_id,
+    });
+
+    if (!schoolCircle) {
+      schoolCircle = new SocialCircle({
+        name: parent.kid_school_id.name,
+        type: "school",
+        parent: parent.kid_school_id,
+        parentModel: "School",
+      });
+      await schoolCircle.save();
+    }
+    socialCircles.push(schoolCircle);
+
+    // Create a class social circle
+    let classCircle = await SocialCircle.findOne({
+      name: `Class ${parent.kid_class_id.name}, ${parent.kid_school_id.name}`,
+      type: "class",
+      parent: parent.kid_class_id,
+    });
+
+    if (!classCircle) {
+      classCircle = new SocialCircle({
+        name: `Class ${parent.kid_class_id.name}, ${parent.kid_school_id.name}`,
+        type: "class",
+        parent: parent.kid_class_id,
+        parentModel: "Class",
+      });
+      await classCircle.save();
+    }
+    socialCircles.push(classCircle);
+
+    // Create a section social circle
+    let sectionCircle = await SocialCircle.findOne({
+      name: `Section ${parent.kid_section_id.name}, Class ${parent.kid_class_id.name}, ${parent.kid_school_id.name}`,
+      type: "section",
+      parent: parent.kid_section_id,
+    });
+
+    if (!sectionCircle) {
+      sectionCircle = new SocialCircle({
+        name: `Section ${parent.kid_section_id.name}, Class ${parent.kid_class_id.name}, ${parent.kid_school_id.name}`,
+        type: "section",
+        parent: parent.kid_section_id,
+        parentModel: "Section",
+      });
+      await sectionCircle.save();
+    }
+    socialCircles.push(sectionCircle);
+
+    // Create a society social circle if the parent has disclosed their society
+    if (parent.society_id) {
+      const parentExtendedDetails = await Parent.findById(parentId).populate(
+        "society_id"
+      );
+      let societyCircle = await SocialCircle.findOne({
+        name: parentExtendedDetails.society_id.name,
+        type: "society",
+        parent: parentExtendedDetails.society_id,
+      });
+      if (!societyCircle) {
+        societyCircle = new SocialCircle({
+          name: parentExtendedDetails.society_id.name,
+          type: "society",
+          parent: parentExtendedDetails.society_id,
+          parentModel: "Society",
+        });
+        await societyCircle.save();
+      }
+
+      // Create a society, school circle
+
+      let societySchoolCircle = await SocialCircle.findOne({
+        name: `${parentExtendedDetails.society_id.name}, ${parent.kid_school_id.name}`,
+        type: "custom",
+        parent: parent.kid_school_id,
+      });
+
+      if (!societySchoolCircle) {
+        societySchoolCircle = new SocialCircle({
+          name: `${parentExtendedDetails.society_id.name}, ${parent.kid_school_id.name}`,
+          type: "custom",
+          parent: parent.kid_school_id,
+          parentModel: "School",
+        });
+        await societySchoolCircle.save();
+      }
+
+      socialCircles.push(societyCircle, societySchoolCircle);
+    }
+
+    return socialCircles;
+  } catch (error) {
+    console.log(
+      "Something went wrong while creating social circles",
+      error.message
+    );
+    throw new Error("Failed to create social circles");
+  }
+};
+
+const addParentToSocialCircle = async (parentId, socialCircles) => {
+  try {
+    for (const socialCircle of socialCircles) {
+      if (!socialCircle.members.includes(parentId)) {
+        socialCircle.members.push(parentId);
+        await socialCircle.save();
+      }
+
+      // Add social circles to parent's social circles array
+      const parent = await Parent.findById(parentId);
+      if (parent) {
+        socialCircles.forEach((socialCircle) => {
+          if (!parent.social_circles.includes(socialCircle._id)) {
+            parent.social_circles.push(socialCircle._id);
+          }
+        });
+        await parent.save();
+      }
+    }
+  } catch (error) {
+    console.log(
+      "Something went wrong while adding parent to social circle",
+      error.message
+    );
+    throw new Error("Failed to add parent to social circle");
+  }
+};
 
 module.exports = {
-  createSocialCircle,
-  getSocialCircles,
-  getCircleMembers,
-  joinSocialCircle,
-  leaveSocialCircle,
-  updateSocialCircle,
-  deleteSocialCircle,
+  createAutoSocialCircles,
+  addParentToSocialCircle,
 };

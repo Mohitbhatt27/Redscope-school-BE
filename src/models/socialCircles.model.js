@@ -2,10 +2,19 @@ const mongoose = require("mongoose");
 
 const socialCircleSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  type: { type: String, required: true },
-  parent_circle_id: {
+  type: {
+    type: String,
+    enum: ["school", "class", "section", "society", "custom"],
+    required: true,
+  },
+  parent: {
     type: mongoose.Types.ObjectId,
-    ref: "SocialCircle",
+    refPath: "parentModel", // refpath references different models based on parentModel value
+    default: null,
+  },
+  parentModel: {
+    type: String,
+    enum: ["School", "Class", "Section", "Society", null], // can reference any of these models
     default: null,
   },
   members: [{ type: mongoose.Types.ObjectId, ref: "Parent" }],
