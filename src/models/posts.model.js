@@ -7,6 +7,7 @@ const postSchema = new mongoose.Schema(
     social_circle_id: { type: mongoose.Types.ObjectId, ref: "SocialCircle" },
     comments: [{ type: mongoose.Types.ObjectId, ref: "Comment" }],
     likes: [{ type: mongoose.Types.ObjectId, ref: "Parent" }],
+    dislikes: [{ type: mongoose.Types.ObjectId, ref: "Parent" }],
   },
   { timestamps: true }
 );
