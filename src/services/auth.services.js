@@ -98,7 +98,7 @@ const loginParent = async (loginData) => {
       },
       JWT_SECRET,
       {
-        expiresIn: "1d",
+        expiresIn: "6h",
       }
     );
     return token;

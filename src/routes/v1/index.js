@@ -15,6 +15,6 @@ v1Router.use("/comments", CommentRouter);
 v1Router.use("/societies", SocietyRouter);
 v1Router.use("/schools", SchoolRouter);
 v1Router.use("/parents", ParentRouter);
-v1Router.use("/socialCircles", SocialCircleRouter);
+v1Router.use("/social-circles", SocialCircleRouter);
 
 module.exports = v1Router;

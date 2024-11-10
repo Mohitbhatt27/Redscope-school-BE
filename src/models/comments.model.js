@@ -7,7 +7,7 @@ const commentSchema = new mongoose.Schema(
     parent_id: { type: mongoose.Types.ObjectId, ref: "Parent" },
     replies: [{ type: mongoose.Types.ObjectId, ref: "Comment" }],
     likes: [{ type: mongoose.Types.ObjectId, ref: "Parent" }],
-    edited: { type: Boolean, default: false },
+    dislikes: [{ type: mongoose.Types.ObjectId, ref: "Parent" }],
   },
   { timestamps: true }
 );
