@@ -13,6 +13,26 @@ const updateParentDetails = async (req, res) => {
   }
 };
 
+const getAllParents = async (req, res) => {
+  try {
+    const parents = await parentService.getAllParents();
+    res.status(200).json(parents);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const getParentById = async (req, res) => {
+  try {
+    const parent = await parentService.getParentById(req.params.parentId);
+    res.status(200).json(parent);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   updateParentDetails,
+  getAllParents,
+  getParentById,
 };

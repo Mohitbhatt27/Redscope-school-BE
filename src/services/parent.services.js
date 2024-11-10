@@ -42,6 +42,26 @@ const updateParentDetails = async (parentData) => {
   }
 };
 
+const getAllParents = async () => {
+  try {
+    const parents = await Parent.find({}).populate("social_circles");
+    return parents;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getParentById = async (parentId) => {
+  try {
+    const parent = await Parent.findById(parentId).populate("social_circles");
+    return parent;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   updateParentDetails,
+  getAllParents,
+  getParentById,
 };

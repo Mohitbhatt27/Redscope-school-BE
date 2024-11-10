@@ -9,4 +9,8 @@ ParentRouter.patch(
   parentController.updateParentDetails
 );
 
+ParentRouter.get("/", parentController.getAllParents);
+
+ParentRouter.get("/:parentId", parentController.getParentById);
+
 module.exports = ParentRouter;
