@@ -3,11 +3,62 @@ const SocialCircleService = require("../services/socialCircle.services");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config/server.config");
+const School = require("../models/schools.model");
+const Class = require("../models/classes.model");
+const Section = require("../models/sections.model");
+const Society = require("../models/societies.model");
 
 const registerParent = async (parentData) => {
   try {
+    const { name, email, password, school, clasS, section, society } =
+      parentData;
+
     const hashedPassword = await bcrypt.hash(parentData.password, 12);
     parentData.password = hashedPassword;
+
+    const schoolId = await School.findOne({ name: school });
+    if (!schoolId) {
+      const newSchool = await School.create({ name: school });
+      parentData.kid_school_id = newSchool._id;
+    } else {
+      parentData.kid_school_id = schoolId._id;
+    }
+
+    const classId = await Class.findOne({
+      name: clasS,
+      school_id: parentData.kid_school_id,
+    });
+    if (!classId) {
+      const newClass = await Class.create({
+        name: clasS,
+        school_id: parentData.kid_school_id,
+      });
+      parentData.kid_class_id = newClass._id;
+    } else {
+      parentData.kid_class_id = classId._id;
+    }
+
+    const sectionId = await Section.findOne({ name: section });
+    if (!sectionId) {
+      const newSection = await Section.create({
+        name: section,
+        class_id: parentData.kid_class_id,
+      });
+      parentData.kid_section_id = newSection._id;
+    } else {
+      parentData.kid_section_id = sectionId._id;
+    }
+
+    if (society) {
+      const societyId = await Society.findOne({ name: society });
+      if (!societyId) {
+        const newSociety = await Society.create({ name: society });
+        parentData.society_id = newSociety._id;
+      } else {
+        parentData.society_id = societyId._id;
+      }
+    }
+
     const parent = await Parent.create(parentData);
 
     //create social circles for the parent
